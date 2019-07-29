@@ -18,7 +18,7 @@ class User {
     register = (req: Request, res: Response, nxt: NextFunction) => {
         const { errors, isValid } = validateRegisterInput(req.body);
         if (!isValid) {
-            nxt(new Conflict(errors))
+            nxt(new Conflict(errors).parse())
         }
         Users.findOne({ email: req.body.email }).then(user => {
             if (user) {
