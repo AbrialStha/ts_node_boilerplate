@@ -18,7 +18,7 @@ class User {
     register = (req: Request, res: Response, nxt: NextFunction) => {
         const { errors, isValid } = validateRegisterInput(req.body);
         if (!isValid) {
-            nxt(new Conflict(errors).parse())
+            nxt(new Conflict(errors))
         }
         Users.findOne({ email: req.body.email }).then(user => {
             if (user) {
@@ -45,7 +45,7 @@ class User {
                             newUser
                                 .save()
                                 .then(user => res.json(user))
-                                .catch(err => nxt(new HttpException(err).parse()));
+                                .catch(err => nxt(new HttpException(err)));
                         });
                     }
                     nxt(err)

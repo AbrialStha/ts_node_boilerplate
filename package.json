@@ -35,7 +35,8 @@
     "serve-favicon": "^2.5.0",
     "ts-node-dev": "^1.0.0-pre.32",
     "typescript": "^3.3.3333",
-    "validator": "^10.11.0"
+    "validator": "^10.11.0",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "@types/async": "^3.0.0",

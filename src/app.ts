@@ -2,13 +2,14 @@ import express, { Request, Response, NextFunction } from 'express'
 
 import path from "path";
 import favicon from "serve-favicon";
-import logger from "morgan";
+import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import mongoose from "mongoose";
 import passport from "passport";
 
 import routes from './routes'
+import winston from './config/winston'
 
 export default class App {
     public app: express.Application
@@ -43,10 +44,11 @@ export default class App {
 
         //Express Configuration
         app.use(favicon(path.join(__dirname, "/../public", "favicon.ico")));
-        app.use(logger("dev"));
+        app.use(morgan('combined', { "stream": <any>winston.stream }));
         app.use(express.json());
         app.use(express.urlencoded({ extended: false }));
         app.use(cookieParser());
+        app.use(express.static(path.join(__dirname, '/../public')));
         app.use(cors());
         //Initialize passport
         app.use(passport.initialize());
@@ -83,12 +85,17 @@ export default class App {
 
         if (this.app.get("env") === "development") {
             this.app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+                winston.error(err)
+                winston.warn(`\n Stack Trace ----> \n ${err.stack}`)
+                err.parse()
                 res.status(err.status || 500);
                 res.json(err);
             });
         }
 
         this.app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+            winston.error(err)
+            err.parse()
             res.status(err.status || 500);
             res.json(err);
         });
