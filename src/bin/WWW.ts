@@ -14,7 +14,7 @@ if (String(process.env.NODE_ENV) !== 'production')
 /**
  * Init app
  */
-let app = new App().app
+let app = App.getInstance();
 
 /**
  * Get port from environment and store in Express.

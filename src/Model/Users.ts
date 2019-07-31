@@ -8,6 +8,7 @@ export interface IUser extends Document {
     email: string
     password: string
     avatar?: string
+    role?: string
 }
 
 const UserSchema: mongoose.Schema<any> = new Schema({
@@ -25,6 +26,10 @@ const UserSchema: mongoose.Schema<any> = new Schema({
     },
     avatar: {
         type: String
+    },
+    role: {
+        type: String,
+        required: false
     },
     created_date: {
         type: Date,

@@ -1,30 +1,35 @@
+
 import express, { Request, Response, NextFunction } from 'express'
+import mongoose from 'mongoose'
+import path from 'path'
+import favicon from 'serve-favicon'
+import morgan from 'morgan'
+import cookieParser from 'cookie-parser'
+import cors from 'cors'
+import passport from 'passport'
 
-import path from "path";
-import favicon from "serve-favicon";
-import morgan from "morgan";
-import cookieParser from "cookie-parser";
-import cors from "cors";
-import mongoose from "mongoose";
-import passport from "passport";
-
-import routes from './routes'
 import winston from './config/winston'
+import routes from './routes'
 
 export default class App {
-    public app: express.Application
+    private static instance: App
+    private app: express.Application
 
-    constructor() {
-        this.app = express();
-        this.connectDb();
-        this.initMiddleware();
-        this.initRoutes();
-        this.initErrorHandle();
+    private constructor() {
+        this.app = express()
+        this.connectDb()
+        this.initMiddleware(this.app)
+        this.initRoutes(this.app)
+        this.initErrorHandle()
     }
 
+    public static getInstance(): express.Application {
+        if (!App.instance) App.instance = new App();
+        return App.instance.app
+    }
     /**
-    * DataBase COnnection
-    */
+   * DataBase COnnection
+   */
     private connectDb() {
         let dbname: any = process.env.DB //get the mongoose db values from config
         mongoose.connect(dbname, { useNewUrlParser: true }); //connect to the database
@@ -36,8 +41,7 @@ export default class App {
     /**
      * Initialize the Middlewares
      */
-    private initMiddleware() {
-        let app = this.app;
+    private initMiddleware(app: express.Application) {
         // view engine setup
         app.set("views", path.join(__dirname, "/../views"));
         app.set("view engine", "jade");
@@ -59,8 +63,7 @@ export default class App {
     /**
      * Initialize the Routes
      */
-    private initRoutes() {
-        let app = this.app;
+    private initRoutes(app: express.Application) {
         let keys: Array<string> = Object.keys(routes);
         let ver: String = '/api/v1/'
         keys.forEach(k => {
@@ -100,5 +103,4 @@ export default class App {
             res.json(err);
         });
     }
-
 }
