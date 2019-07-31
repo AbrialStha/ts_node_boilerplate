@@ -25,6 +25,15 @@ The prod run will create a build file by using tsc and after that it is similar 
 tsc && node ./build/bin/WWW.js
 ```
 
+### Running in Docker
+```
+docker build -t [name_of_image] .
+```
+```
+docker run -it -p 8080:8088 [name_of_image]
+```
+
+
 ## To Host in Heroku
 
 > Heroku is great for free hosting and not always that easy to host but its for free and thats what it matters
