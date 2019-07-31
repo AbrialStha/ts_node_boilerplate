@@ -1,0 +1,6 @@
+FROM node:9-slim
+WORKDIR /NODE_BOILERPLATE
+COPY package.json ./NODE_BOILERPLATE
+RUN npm install
+COPY . ./NODE_BOILERPLATE
+CMD ["npm","start"]
