@@ -8,8 +8,9 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import passport from 'passport'
 
-import winston from './config/winston'
+import winston from './middleware/winston'
 import routes from './routes'
+import NotFound from './Exceptions/NotFound';
 
 export default class App {
     private static instance: App
@@ -57,7 +58,7 @@ export default class App {
         //Initialize passport
         app.use(passport.initialize());
         //passport Config
-        import('./config/passport').then(passportConfig => passportConfig.default(passport))
+        import('./middleware/passport').then(passportConfig => passportConfig.default(passport))
     }
 
     /**
@@ -81,24 +82,21 @@ export default class App {
     private initErrorHandle() {
         // using arrow syntax
         this.app.use((req: Request, res: Response, next: NextFunction) => {
-            let err: any = new Error("Not Found");
-            err.status = 404;
+            let err: any = new NotFound('The Request Cannot be Found');
             next(err);
         });
 
         if (this.app.get("env") === "development") {
             this.app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-                winston.error(err)
+                if (typeof err.parse !== undefined) winston.error(err.parse())
                 winston.warn(`\n Stack Trace ----> \n ${err.stack}`)
-                err.parse()
                 res.status(err.status || 500);
                 res.json(err);
             });
         }
 
         this.app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-            winston.error(err)
-            err.parse()
+            if (typeof err.parse !== undefined) winston.error(err.parse())
             res.status(err.status || 500);
             res.json(err);
         });

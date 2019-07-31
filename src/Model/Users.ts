@@ -29,7 +29,7 @@ const UserSchema: mongoose.Schema<any> = new Schema({
     },
     role: {
         type: String,
-        required: false
+        default: ''
     },
     created_date: {
         type: Date,

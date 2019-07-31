@@ -48,7 +48,6 @@ class User {
                                 .catch(err => nxt(new HttpException(err)));
                         });
                     }
-                    nxt(err)
                 });
             }
         });
