@@ -10,7 +10,7 @@ import passport from 'passport'
 
 import winston from './middleware/winston'
 import routes from './routes'
-import NotFound from './Exceptions/NotFound';
+import NotFound from './exceptions/NotFound';
 
 export default class App {
     private static instance: App
