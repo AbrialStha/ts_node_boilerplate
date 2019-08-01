@@ -1,5 +1,5 @@
 
-import express, { Request, Response, NextFunction } from 'express'
+import express, { Router, Request, Response, NextFunction } from 'express'
 import mongoose from 'mongoose'
 import path from 'path'
 import favicon from 'serve-favicon'
@@ -7,6 +7,7 @@ import morgan from 'morgan'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import passport from 'passport'
+import fs, { lstatSync } from 'fs'
 
 import winston from './middleware/winston'
 import routes from './routes'
@@ -65,14 +66,18 @@ export default class App {
      * Initialize the Routes
      */
     private initRoutes(app: express.Application) {
-        let keys: Array<string> = Object.keys(routes);
-        let ver: String = '/api/v1/'
-        keys.forEach(k => {
-            if (k !== "base")
-                app.use(`${ver}${k}`, routes[k])
-            else
-                app.use(`${ver}`, routes[k])
-
+        const source = `${__dirname}/routes`
+        const isDirectory = (source: string) => lstatSync(<any>source).isDirectory()
+        const versions: Array<string> = fs.readdirSync(<any>source).filter(name => isDirectory(path.join(source, name)) && name)
+        versions.forEach(vname => {
+            fs.readdirSync(path.join(source, vname)).forEach(file => {
+                var fname = file.split('.')[0];
+                if (!fname.includes("index")) {
+                    app.use(`/api/${vname}/${fname}`, <any>require(`${source}/${vname}/${fname}`).default)
+                } else {
+                    app.use(`/api/${vname}/`, <any>require(`${source}/${vname}/${fname}`).default)
+                }
+            })
         })
     }
 
