@@ -10,7 +10,6 @@ import passport from 'passport'
 import fs, { lstatSync } from 'fs'
 
 import winston from './middleware/winston'
-import routes from './routes'
 import NotFound from './exceptions/NotFound';
 
 export default class App {
@@ -68,14 +67,14 @@ export default class App {
     private initRoutes(app: express.Application) {
         const routeSource = `${__dirname}/routes`
         const isDirectory = (source: string) => lstatSync(<any>source).isDirectory()
-        const versions: Array<string> = fs.readdirSync(<any>routeSource).filter(name => isDirectory(path.join(source, name)) && name)
+        const versions: Array<string> = fs.readdirSync(<any>routeSource).filter(name => isDirectory(path.join(routeSource, name)) && name)
         versions.forEach(vname => {
             fs.readdirSync(path.join(routeSource, vname)).forEach(file => {
                 var fname = file.split('.')[0];
                 if (!fname.includes("index")) {
-                    app.use(`/api/${vname}/${fname}`, <any>require(`${source}/${vname}/${fname}`).default)
+                    app.use(`/api/${vname}/${fname}`, <any>require(`${routeSource}/${vname}/${fname}`).default)
                 } else {
-                    app.use(`/api/${vname}/`, <any>require(`${source}/${vname}/${fname}`).default)
+                    app.use(`/api/${vname}/`, <any>require(`${routeSource}/${vname}/${fname}`).default)
                 }
             })
         })
