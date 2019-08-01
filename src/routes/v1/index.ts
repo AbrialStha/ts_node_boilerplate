@@ -9,4 +9,18 @@ router.get("/", function (req: any, res: any) {
     });
 });
 
+
+async function wait(ms: number) {
+    return new Promise((resolve, reject) => {
+        setTimeout(resolve, ms)
+    })
+}
+
+router.get('/test', async function (req, res) {
+    res.send('hello world');
+    console.log('before wait', new Date());
+    await wait(5 * 1000);
+    console.log('after wait', new Date())
+})
+
 export default router;

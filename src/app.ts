@@ -74,7 +74,7 @@ export default class App {
                 if (!fname.includes("index")) {
                     app.use(`/api/${vname}/${fname}`, <any>require(`${routeSource}/${vname}/${fname}`).default)
                 } else {
-                    app.use(`/api/${vname}/`, <any>require(`${routeSource}/${vname}/${fname}`).default)
+                    app.use(`/api/${vname}`, <any>require(`${routeSource}/${vname}/${fname}`).default)
                 }
             })
         })
