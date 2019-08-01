@@ -66,11 +66,11 @@ export default class App {
      * Initialize the Routes
      */
     private initRoutes(app: express.Application) {
-        const source = `${__dirname}/routes`
+        const routeSource = `${__dirname}/routes`
         const isDirectory = (source: string) => lstatSync(<any>source).isDirectory()
-        const versions: Array<string> = fs.readdirSync(<any>source).filter(name => isDirectory(path.join(source, name)) && name)
+        const versions: Array<string> = fs.readdirSync(<any>routeSource).filter(name => isDirectory(path.join(source, name)) && name)
         versions.forEach(vname => {
-            fs.readdirSync(path.join(source, vname)).forEach(file => {
+            fs.readdirSync(path.join(routeSource, vname)).forEach(file => {
                 var fname = file.split('.')[0];
                 if (!fname.includes("index")) {
                     app.use(`/api/${vname}/${fname}`, <any>require(`${source}/${vname}/${fname}`).default)
