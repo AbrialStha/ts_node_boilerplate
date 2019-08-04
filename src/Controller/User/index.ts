@@ -102,6 +102,14 @@ class User {
                 .catch(err => nxt(new HttpException(err)));
         });
     };
+
+    /**
+     * Login by authenticated User
+     */
+    me = (req: Request, res: Response, nxt: NextFunction) => {
+        let id = req.user.id
+        Users.findById(id).then(user => res.json({ success: true, user }))
+    }
 }
 
 export default new User();

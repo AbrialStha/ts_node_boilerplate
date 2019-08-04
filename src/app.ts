@@ -90,19 +90,18 @@ export default class App {
             next(err);
         });
 
-        if (this.app.get("env") === "development") {
+        if (this.app.get("env") === "development")
             this.app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-                if (typeof err.parse !== undefined) winston.error(err.parse())
+                if (err.hasOwnProperty('parse')) winston.error(err.parse())
                 winston.warn(`\n Stack Trace ----> \n ${err.stack}`)
                 res.status(err.status || 500);
                 res.json(err);
             });
-        }
-
-        this.app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-            if (typeof err.parse !== undefined) winston.error(err.parse())
-            res.status(err.status || 500);
-            res.json(err);
-        });
+        else
+            this.app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+                if (err.hasOwnProperty('parse')) winston.error(err.parse())
+                res.status(err.status || 500);
+                res.json(err);
+            });
     }
 }

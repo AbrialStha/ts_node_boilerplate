@@ -1,15 +1,18 @@
 import { Router } from "express";
 import passport from 'passport'
 import User from "../../controller/User";
-import { checkUserRole } from '../../middleware/role'
+import { authorize } from '../../middleware/authorize'
+import { Roles } from "../../enums";
 
 const router: Router = Router();
 
 //@route    GET api/users/test
 //@desc     Tests post route
 //@access   Public
-router.get("/test", passport.authenticate("jwt", { session: false }), checkUserRole, (req, res) => res.json({ msg: "Users work", user: req.user }));
+//@ts-ignore
+router.get("/test", passport.authenticate("jwt", { session: false }), authorize([Roles.Admin]), (req, res) => res.json({ msg: "Users work", user: req.user }));
 
+router.get('/me', passport.authenticate("jwt", { session: false }), User.me)
 //@route    POST api/users/register
 //@desc     Tests post route
 //@access   Public

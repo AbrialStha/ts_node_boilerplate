@@ -2,6 +2,7 @@
  * This is User Model
  */
 import mongoose, { Schema, Document, model, Model } from "mongoose";
+import { Roles } from '../enums'
 
 export interface IUser extends Document {
     name: string
@@ -28,8 +29,8 @@ const UserSchema: mongoose.Schema<any> = new Schema({
         type: String
     },
     role: {
-        type: String,
-        default: ''
+        type: [String],
+        default: [Roles.User]
     },
     created_date: {
         type: Date,
